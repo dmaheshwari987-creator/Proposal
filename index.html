@@ -250,53 +250,54 @@ for(let i=0;i<35;i++){
 
 <script>
 
-/* No Button Logic - Using transform for smooth movement */
+/* No Button - Escape when hovered or clicked */
 
 const noBtn = document.getElementById("noBtn");
-let isMoving = false;
 
-function moveButtonAway(){
-    if(isMoving) return;
-    isMoving = true;
-
-    const padding = 100;
-    const maxX = window.innerWidth - padding;
-    const minX = padding;
-    const maxY = window.innerHeight - padding;
-    const minY = padding;
-
-    const randomX = Math.random() * (maxX - minX) + minX;
-    const randomY = Math.random() * (maxY - minY) + minY;
-
+function escapeButton() {
+    const btnWidth = 120;
+    const btnHeight = 50;
+    
+    let randomX, randomY;
+    let attempts = 0;
+    
+    do {
+        randomX = Math.random() * (window.innerWidth - btnWidth);
+        randomY = Math.random() * (window.innerHeight - btnHeight);
+        attempts++;
+    } while ((randomX < 50 || randomX > window.innerWidth - btnWidth - 50 || 
+              randomY < 50 || randomY > window.innerHeight - btnHeight - 50) && attempts < 10);
+    
     noBtn.style.position = "fixed";
     noBtn.style.left = randomX + "px";
     noBtn.style.top = randomY + "px";
-
-    setTimeout(() => {
-        isMoving = false;
-    }, 300);
 }
 
 // Move on hover
-noBtn.addEventListener("mouseenter", moveButtonAway);
+noBtn.addEventListener("mouseover", (e) => {
+    e.preventDefault();
+    escapeButton();
+});
 
 // Move on click
 noBtn.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
-    moveButtonAway();
+    escapeButton();
+});
+
+// Prevent accidental submission
+noBtn.addEventListener("submit", (e) => {
+    e.preventDefault();
 });
 
 /* Yes Button */
 
-document.getElementById("yesBtn").addEventListener("click",()=>{
+document.getElementById("yesBtn").addEventListener("click", () => {
 
-    document.body.innerHTML=`
-
+    document.body.innerHTML = `
     <div class="success-screen">
-
         <h1>YAYYYY ❤️</h1>
-
         <p>
             This is officially the best day of my life 😭💍
             <br><br>
@@ -305,7 +306,6 @@ document.getElementById("yesBtn").addEventListener("click",()=>{
             annoy you,
             and stay with you forever.
         </p>
-
     </div>
     `;
 
@@ -314,23 +314,14 @@ document.getElementById("yesBtn").addEventListener("click",()=>{
 
 /* Confetti */
 
-function createConfetti(){
-
-    for(let i=0;i<250;i++){
-
-        const conf=document.createElement("div");
-
-        conf.className="confetti";
-
-        conf.style.left=Math.random()*100+"vw";
-        conf.style.top="-20px";
-
-        conf.style.background=
-        `hsl(${Math.random()*360},100%,50%)`;
-
-        conf.style.animationDuration=
-        (Math.random()*3+2)+"s";
-
+function createConfetti() {
+    for(let i = 0; i < 250; i++) {
+        const conf = document.createElement("div");
+        conf.className = "confetti";
+        conf.style.left = Math.random() * 100 + "vw";
+        conf.style.top = "-20px";
+        conf.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        conf.style.animationDuration = (Math.random() * 3 + 2) + "s";
         document.body.appendChild(conf);
     }
 }
