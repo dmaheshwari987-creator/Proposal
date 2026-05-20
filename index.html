@@ -51,11 +51,12 @@ body{
 /* Floating Hearts */
 
 .heart{
-    position:absolute;
+    position:fixed;
     bottom:-20px;
     color:rgba(255,255,255,0.7);
     animation:floatUp linear infinite;
     user-select:none;
+    pointer-events:none;
 }
 
 @keyframes floatUp{
@@ -102,21 +103,20 @@ h1{
 /* Buttons */
 
 .btn-container{
-    position:relative;
-    height:100px;
     display:flex;
     justify-content:center;
-    gap:20px;
+    gap:30px;
+    margin-top:40px;
 }
 
 button{
     border:none;
-    padding:15px 30px;
+    padding:15px 35px;
     border-radius:50px;
-    font-size:20px;
+    font-size:18px;
     font-weight:600;
     cursor:pointer;
-    transition:0.3s;
+    transition:all 0.3s ease;
 }
 
 #yesBtn{
@@ -126,12 +126,12 @@ button{
 
 #yesBtn:hover{
     transform:scale(1.1);
+    box-shadow:0 5px 20px rgba(255,64,129,0.4);
 }
 
 #noBtn{
     background:#ff4081;
     color:white;
-    position:absolute;
 }
 
 /* Success Screen */
@@ -174,10 +174,11 @@ button{
 /* Confetti */
 
 .confetti{
-    position:absolute;
+    position:fixed;
     width:12px;
     height:12px;
     animation:fall linear forwards;
+    pointer-events:none;
 }
 
 @keyframes fall{
@@ -191,23 +192,23 @@ button{
 
 /* Mobile */
 
-@media(max-width:500px){
+@media(max-width:600px){
 
     h1{
         font-size:28px;
     }
 
     .subtitle{
-        font-size:15px;
+        font-size:14px;
     }
 
     button{
-        padding:14px 24px;
-        font-size:18px;
+        padding:12px 24px;
+        font-size:16px;
     }
 
     .btn-container{
-        flex-direction:column;
+        gap:15px;
     }
 
     .music-btn{
@@ -287,7 +288,8 @@ const musicBtn = document.getElementById("musicBtn");
 const bgMusic = document.getElementById("bgMusic");
 let isPlaying = false;
 
-musicBtn.addEventListener("click", () => {
+musicBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
     if (isPlaying) {
         bgMusic.pause();
         musicBtn.innerHTML = "🔇";
@@ -308,39 +310,41 @@ document.addEventListener("click", () => {
     }
 }, { once: true });
 
-/* No Button Logic */
+/* No Button Logic - Using transform for smooth movement */
 
 const noBtn = document.getElementById("noBtn");
-const btnContainer = document.querySelector(".btn-container");
-const containerRect = btnContainer.getBoundingClientRect();
+let isMoving = false;
 
-function moveButton(e){
-    // Prevent the click from triggering other events
-    if(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
+function moveButtonAway(){
+    if(isMoving) return;
+    isMoving = true;
 
-    const padding = 50;
-    const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+    const padding = 100;
+    const maxX = window.innerWidth - padding;
     const minX = padding;
-    const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+    const maxY = window.innerHeight - padding;
     const minY = padding;
 
-    const x = Math.random() * (maxX - minX) + minX;
-    const y = Math.random() * (maxY - minY) + minY;
+    const randomX = Math.random() * (maxX - minX) + minX;
+    const randomY = Math.random() * (maxY - minY) + minY;
 
     noBtn.style.position = "fixed";
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
+    noBtn.style.left = randomX + "px";
+    noBtn.style.top = randomY + "px";
+
+    setTimeout(() => {
+        isMoving = false;
+    }, 300);
 }
 
-// Move button on hover
-noBtn.addEventListener("mouseenter", moveButton);
+// Move on hover
+noBtn.addEventListener("mouseenter", moveButtonAway);
 
-// Move button on click (don't disappear)
-noBtn.addEventListener("click", function(e) {
-    moveButton(e);
+// Move on click
+noBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    moveButtonAway();
 });
 
 /* Yes Button */
