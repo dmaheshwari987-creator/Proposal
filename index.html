@@ -27,27 +27,6 @@ body{
     position:relative;
 }
 
-/* Music Button */
-.music-btn{
-    position:fixed;
-    top:20px;
-    right:20px;
-    background:white;
-    border:none;
-    width:50px;
-    height:50px;
-    border-radius:50%;
-    font-size:24px;
-    cursor:pointer;
-    box-shadow:0 4px 15px rgba(0,0,0,0.2);
-    z-index:100;
-    transition:0.3s;
-}
-
-.music-btn:hover{
-    transform:scale(1.1);
-}
-
 /* Floating Hearts */
 
 .heart{
@@ -210,24 +189,12 @@ button{
     .btn-container{
         gap:15px;
     }
-
-    .music-btn{
-        width:45px;
-        height:45px;
-        font-size:20px;
-    }
 }
 
 </style>
 </head>
 
 <body>
-
-<!-- Background Music -->
-<button class="music-btn" id="musicBtn" title="Play Music">🔊</button>
-<audio id="bgMusic" loop>
-    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=romantic-background-112997.mp3" type="audio/mpeg">
-</audio>
 
 <!-- Floating Hearts -->
 
@@ -282,33 +249,6 @@ for(let i=0;i<35;i++){
 </div>
 
 <script>
-
-/* Music Button */
-const musicBtn = document.getElementById("musicBtn");
-const bgMusic = document.getElementById("bgMusic");
-let isPlaying = false;
-
-musicBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    if (isPlaying) {
-        bgMusic.pause();
-        musicBtn.innerHTML = "🔇";
-        isPlaying = false;
-    } else {
-        bgMusic.play();
-        musicBtn.innerHTML = "🔊";
-        isPlaying = true;
-    }
-});
-
-/* Auto play on page interaction */
-document.addEventListener("click", () => {
-    if (!isPlaying) {
-        bgMusic.play();
-        musicBtn.innerHTML = "🔊";
-        isPlaying = true;
-    }
-}, { once: true });
 
 /* No Button Logic - Using transform for smooth movement */
 
