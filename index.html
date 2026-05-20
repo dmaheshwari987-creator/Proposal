@@ -103,7 +103,10 @@ h1{
 
 .btn-container{
     position:relative;
-    height:180px;
+    height:100px;
+    display:flex;
+    justify-content:center;
+    gap:20px;
 }
 
 button{
@@ -114,14 +117,11 @@ button{
     font-weight:600;
     cursor:pointer;
     transition:0.3s;
-    position:absolute;
 }
 
 #yesBtn{
     background:white;
     color:#ff4081;
-    left:20%;
-    top:60px;
 }
 
 #yesBtn:hover{
@@ -131,8 +131,7 @@ button{
 #noBtn{
     background:#ff4081;
     color:white;
-    right:20%;
-    top:60px;
+    position:absolute;
 }
 
 /* Success Screen */
@@ -207,12 +206,8 @@ button{
         font-size:18px;
     }
 
-    #yesBtn{
-        left:10%;
-    }
-
-    #noBtn{
-        right:10%;
+    .btn-container{
+        flex-direction:column;
     }
 
     .music-btn{
@@ -315,33 +310,38 @@ document.addEventListener("click", () => {
 
 /* No Button Logic */
 
-const noBtn=document.getElementById("noBtn");
+const noBtn = document.getElementById("noBtn");
+const btnContainer = document.querySelector(".btn-container");
+const containerRect = btnContainer.getBoundingClientRect();
 
-let noScale=1;
-
-function moveButton(){
-
-    const maxX=window.innerWidth-120;
-    const maxY=window.innerHeight-80;
-
-    const x=Math.random()*maxX;
-    const y=Math.random()*maxY;
-
-    noBtn.style.position="fixed";
-    noBtn.style.left=x+"px";
-    noBtn.style.top=y+"px";
-
-    noScale -= 0.08;
-
-    if(noScale < 0.2){
-        noScale = 0.2;
+function moveButton(e){
+    // Prevent the click from triggering other events
+    if(e) {
+        e.preventDefault();
+        e.stopPropagation();
     }
 
-    noBtn.style.transform=`scale(${noScale})`;
+    const padding = 50;
+    const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+    const minX = padding;
+    const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+    const minY = padding;
+
+    const x = Math.random() * (maxX - minX) + minX;
+    const y = Math.random() * (maxY - minY) + minY;
+
+    noBtn.style.position = "fixed";
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
 }
 
-noBtn.addEventListener("mouseover", moveButton);
-noBtn.addEventListener("click", moveButton);
+// Move button on hover
+noBtn.addEventListener("mouseenter", moveButton);
+
+// Move button on click (don't disappear)
+noBtn.addEventListener("click", function(e) {
+    moveButton(e);
+});
 
 /* Yes Button */
 
